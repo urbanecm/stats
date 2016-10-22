@@ -40,7 +40,7 @@ print """
 
 cur = conn.cursor()
 with cur:
-	sql = 'select count(*), rev_user_text from revision where rev_timestamp>="20160701000000" and rev_user not in (select ug_user from user_groups where ug_group="bot") group by rev_user order by count(*) desc;'
+	sql = 'select count(*), rev_user_text from revision where rev_timestamp>="' + '{:%Y%m%d%H%M%S}'.format(d) + '" and rev_user not in (select ug_user from user_groups where ug_group="bot") group by rev_user_text order by count(*) desc;'
 	cur.execute(sql)
 	data = cur.fetchall()
 
