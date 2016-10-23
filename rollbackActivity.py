@@ -33,7 +33,7 @@ print """
 <html lang="cs-cz">
         <head>
                 <meta charset="utf-8" />
-                <title>Statistika patrolářů v """ + wiki + """</title>
+                <title>Statistika revertérů v """ + wiki + """</title>
         </head>
         <body>
 """
