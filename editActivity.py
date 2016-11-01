@@ -18,14 +18,19 @@ if 'QUERY_STRING' in os.environ:
                 family = qs['family'][0]
         except:
                 family = 'wiki'
+	try:
+		days = qs['days'][0]
+	except:
+		days = 100
 else:
         lang = "cs"
         family = "wiki"
+	days = 100
 
 wiki = lang + family
 conn = db.connect(wiki)
 
-d = datetime.today() - timedelta(days=100)
+d = datetime.today() - timedelta(days=days)
 
 print 'Content-type: text/html\n'
 print """
