@@ -19,7 +19,7 @@ if 'QUERY_STRING' in os.environ:
         except:
                 family = 'wiki'
 	try:
-		days = qs['days'][0]
+		days = int(qs['days'][0])
 	except:
 		days = 100
 else:
