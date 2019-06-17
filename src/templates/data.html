@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="cs-cz">
+    <head>
+        <meta charset="utf-8" />
+        <title>Statistika patrolářů v {{ wiki }}</title>
+    </head>
+    <body>
+        <p>Níže uvedená statistika je za {{ days }}dnů</p>
+        <table>
+            <thead>
+                <th>
+                    <td>Uživatel</td>
+                    <td>Počet</td>
+                </th>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                <tr>
+                    <td>{{row.0}}</td>
+                    <td>{{row.1}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </body>
+</html>
