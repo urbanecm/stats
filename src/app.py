@@ -22,7 +22,7 @@ def patrol():
 
 	cur = conn.cursor()
 	with cur:
-		sql = 'select count(*), actor_name from logging join actor on actor_user=log_actor where log_type="patrol" and log_action="patrol" and log_timestamp>="' + '{:%Y%m%d%H%M%S}'.format(d) +'" group by log_user order by count(*) desc;'
+		sql = 'select count(*), actor_name from logging join actor on actor_user=log_actor where log_type="patrol" and log_action="patrol" and log_timestamp>="' + '{:%Y%m%d%H%M%S}'.format(d) +'" group by log_actor order by count(*) desc;'
 		cur.execute(sql)
 		data = cur.fetchall()
 	cur = conn.cursor()
