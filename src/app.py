@@ -20,16 +20,24 @@ def patrol():
 
 	d = datetime.today() - timedelta(days=int(days))
 
+	data = []
 	cur = conn.cursor()
 	with cur:
 		sql = 'select count(*), actor_name from logging join actor on actor_id=log_actor where log_type="patrol" and log_action="patrol" and log_timestamp>="' + '{:%Y%m%d%H%M%S}'.format(d) +'" group by log_actor order by count(*) desc;'
 		cur.execute(sql)
-		data = list(cur.fetchall())
+		rows = cur.fetchall()
+		for row in rows:
+			row_ = []
+			for item in row:
+				if isinstance(item, bytes):
+					row_.append(item.decode('utf-8'))¨
+				else:
+					row_.append(item)
 	cur = conn.cursor()
 	with cur:
 		sql = 'select count(*) from logging where log_type="patrol" and log_action="patrol" and log_timestamp>="' + '{:%Y%m%d%H%M%S}'.format(d) +'";'
 		cur.execute(sql)
-		data.append((cur.fetchall()[0][0], "<strong>Celkem</strong>"))
+		rows = (cur.fetchall()[0][0], "<strong>Celkem</strong>")
 	
 	return render_template('data.html', data=data, days=days, wiki=dbname)
 
