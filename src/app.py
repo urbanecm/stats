@@ -12,9 +12,9 @@ def index():
 
 @app.route('/patrol')
 def patrol():
-	days = int(request.GET.get('days', 0))
-	lang = request.GET.get('lang', 'cs')
-	family = request.GET.get('family', 'wikipedia')
+	days = int(request.args.get('days', 0))
+	lang = request.args.get('lang', 'cs')
+	family = request.args.get('family', 'wikipedia')
 	dbname = lang + family.replace('wikipedia', 'wiki')
 	conn = toolforge.connect(dbname)
 
