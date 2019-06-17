@@ -55,7 +55,7 @@ def rollback():
 
 	cur = conn.cursor()
 	with cur:
-		sql = 'select count(*), rev_user_text from revision where rev_timestamp>="' + '{:%Y%m%d%H%M%S}'.format(d) + '" and rev_comment like "Editace uživatele % vráceny do předchozího stavu, jehož autorem je %" group by rev_user order by count(*) desc;'
+		sql = 'select count(*), actor_name from revision join actor on actor_id=rev_actor where rev_timestamp>="' + '{:%Y%m%d%H%M%S}'.format(d) + '" and rev_comment like "Editace uživatele % vráceny do předchozího stavu, jehož autorem je %" group by rev_user order by count(*) desc;'
 		cur.execute(sql)
 		data = cur.fetchall()
 
