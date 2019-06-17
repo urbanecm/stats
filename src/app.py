@@ -29,10 +29,8 @@ def patrol():
 	family = request.args.get('family', 'wikipedia')
 	dbname = lang + family.replace('wikipedia', 'wiki')
 	conn = toolforge.connect(dbname)
-
 	d = datetime.today() - timedelta(days=int(days))
 
-	data = []
 	cur = conn.cursor()
 	with cur:
 		sql = 'select count(*), actor_name from logging join actor on actor_id=log_actor where log_type="patrol" and log_action="patrol" and log_timestamp>="' + '{:%Y%m%d%H%M%S}'.format(d) +'" group by log_actor order by count(*) desc;'
@@ -44,7 +42,24 @@ def patrol():
 		cur.execute(sql)
 		data.append((cur.fetchall()[0][0], "<strong>Celkem</strong>"))
 	
-	return render_template('data.html', data=data, days=days, wiki=dbname)
+	return render_template('data.html', data=data, days=days, wiki=dbname, what="patrolářů")
+
+@app.route('/rollback')
+def rollback():
+	days = int(request.args.get('days', 100))
+	lang = request.args.get('lang', 'cs')
+	family = request.args.get('family', 'wikipedia')
+	dbname = lang + family.replace('wikipedia', 'wiki')
+	conn = toolforge.connect(dbname)
+	d = datetime.today() - timedelta(days=int(days))
+
+	cur = conn.cursor()
+	with cur:
+		sql = 'select count(*), rev_user_text from revision where rev_timestamp>="' + '{:%Y%m%d%H%M%S}'.format(d) + '" and rev_comment like "Editace uživatele % vráceny do předchozího stavu, jehož autorem je %" group by rev_user order by count(*) desc;'
+		cur.execute(sql)
+		data = cur.fetchall()
+
+	return render_template('data.html', data=data, days=days, wiki=dbname, what="revertérů")
 
 if __name__ == "__main__":
 	app.run(host="0.0.0.0", port=5000)
