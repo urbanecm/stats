@@ -12,7 +12,7 @@ def index():
 
 @app.route('/patrol')
 def patrol():
-	days = int(request.args.get('days', 0))
+	days = int(request.args.get('days', 100))
 	lang = request.args.get('lang', 'cs')
 	family = request.args.get('family', 'wikipedia')
 	dbname = lang + family.replace('wikipedia', 'wiki')
@@ -24,7 +24,7 @@ def patrol():
 	with cur:
 		sql = 'select count(*), actor_name from logging join actor on actor_user=log_actor where log_type="patrol" and log_action="patrol" and log_timestamp>="' + '{:%Y%m%d%H%M%S}'.format(d) +'" group by log_actor order by count(*) desc;'
 		cur.execute(sql)
-		data = cur.fetchall()
+		data = list(cur.fetchall())
 	cur = conn.cursor()
 	with cur:
 		sql = 'select count(*) from logging where log_type="patrol" and log_action="patrol" and log_timestamp>="' + '{:%Y%m%d%H%M%S}'.format(d) +'";'
