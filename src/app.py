@@ -53,11 +53,16 @@ def rollback():
 	conn = toolforge.connect(dbname)
 	d = datetime.today() - timedelta(days=int(days))
 
+	with conn.cursor() as cur:
+		cur.execute('select ctd_id from change_tag_def where ctd_name="mw-rollback"')
+		tmp = cur.fetchall()
+		ctd_id = tmp[0][0]
+
 	cur = conn.cursor()
 	with cur:
-		sql = 'select count(*), actor_name from revision join actor on actor_id=rev_actor where rev_timestamp>="' + '{:%Y%m%d%H%M%S}'.format(d) + '" and rev_comment like "Editace uživatele % vráceny do předchozího stavu, jehož autorem je %" group by rev_user order by count(*) desc;'
+		sql = 'select count(*), actor_name from change_tag join revision on rev_id=ct_rev_id join actor_revision on rev_actor=actor_id where ct_tag_id=%d and rev_timestamp >= "%s" group by rev_actor order by count(*) desc;' % (ctd_id, '{:%Y%m%d%H%M%S}'.format(d))
 		cur.execute(sql)
-		data = cur.fetchall()
+		data = decode_if_necessary(cur.fetchall())
 
 	return render_template('data.html', data=data, days=days, wiki=dbname, what="revertérů")
 
